@@ -363,12 +363,29 @@
     }
 
     function disableDevTools(event) {
-      const forbiddenKeys = [123, 18,17,91 ]; // F12, Alt, S, U, I (DevTools keys)
-      if (forbiddenKeys.includes(event.keyCode)) {
-        event.preventDefault();
-        return false;
-      }
+  const forbiddenKeys = [123, 18, 17, 91]; // F12, Alt, Ctrl, Meta (Windows/Command key)
+
+  // Check for forbidden keys without modifiers
+  if (forbiddenKeys.includes(event.keyCode)) {
+    event.preventDefault();
+    return false;
+  }
+
+  // Check for combinations with Ctrl or Shift
+  if (event.ctrlKey || event.shiftKey || event.altKey) {
+    // Block specific combinations
+    if (
+      (event.ctrlKey && event.shiftKey && (event.keyCode === 73 || event.keyCode === 74)) || // Ctrl+Shift+I, Ctrl+Shift+J
+      (event.ctrlKey && event.keyCode === 85) // Ctrl+U
+    ) {
+      event.preventDefault();
+      return false;
     }
+  }
+}
+
+document.addEventListener('keydown', disableDevTools);
+
 
     window.onload = loadQuestions;
   </script>
